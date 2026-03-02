@@ -104,7 +104,7 @@ Lista de Alunos
 
 ## 🔸 Dados fixos:
 
-| Nome | Email | Curso |
+| Nome | Email | Curso |V
 | --- | --- | --- |
 | Ana | [ana@email.com](mailto:ana@email.com) | HTML |
 | Bruno | [bruno@email.com](mailto:bruno@email.com) | CSS |
