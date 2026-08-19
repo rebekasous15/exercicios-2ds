@@ -6,7 +6,7 @@ class Cofre {
     }
 
 
-verificaCodigo(codigo) {
+verificarCodigo(codigo) {
     if (codigo == this.#codigo) {
         return true 
     } else {
@@ -15,5 +15,7 @@ verificaCodigo(codigo) {
   } 
 }
 
-const cofre = new Cofre(1234)
+const cofre = new Cofre("1234")
+verificarCodigo("9999")
+verificarCodigo("0000")
 module.exports = cofre 
