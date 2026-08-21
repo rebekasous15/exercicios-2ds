@@ -16,6 +16,6 @@ verificarCodigo(codigo) {
 }
 
 const cofre = new Cofre("1234")
-verificarCodigo("9999")
-verificarCodigo("0000")
+cofre.verificarCodigo("9999")
+cofre.verificarCodigo("0000")
 module.exports = cofre 

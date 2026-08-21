@@ -10,4 +10,4 @@ class Filme {
 const interestelar = new Filme("Interestelar", "Cristopher Nolan", 2014)
 
 //execução
-console.log(interestelar)
+module.exports = filme 
