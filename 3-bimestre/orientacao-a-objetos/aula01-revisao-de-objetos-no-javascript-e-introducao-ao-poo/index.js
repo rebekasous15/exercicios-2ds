@@ -1,13 +1,11 @@
-class Filme {
-    constructor(titulo, diretor, ano) {
-        this.titulo = titulo
-        this.diretor = diretor
-        this.ano = ano
+filme = {
+    titulo: "Interestelar",
+    diretor: "Christopher Nolan",
+    ano: 2014,
+
+    apresentar(){
+        return "Filme: Interestelar"
     }
 }
 
-//instâncias 
-const interestelar = new Filme("Interestelar", "Cristopher Nolan", 2014)
-
-//execução
-module.exports = filme 
+module.exports = filme
