@@ -1,21 +1,15 @@
-class Produto {
-    #preco 
+class Usuario{
+    #nome
 
-    constructor(preco) {
-        this.#preco = preco 
-    } 
-
-    get preco() {
-        return this.#preco
+    constructor(nome){
+        this.#nome = nome
     }
 
-    set preco(novoPreco) {
-         if(novoPreco >= 0 ){
-            this.#preco = novoPreco
-        }
+    get nome(){
+        return this.#nome
     }
 }
 
-const preco = new Produto (100)
+const usuario = new Usuario("John")
 
-module.exports = preco 
+module.exports = usuario
