@@ -1,11 +1,13 @@
-filme = {
-    titulo: "Interestelar",
-    diretor: "Christopher Nolan",
-    ano: 2014,
-
-    apresentar(){
-        return "Filme: Interestelar"
+class Filme {
+    constructor(titulo, diretor, ano) {
+        this.titulo = titulo
+        this.diretor = diretor
+        this.ano = ano
     }
 }
 
-module.exports = filme
+//instâncias 
+const interestelar = new Filme("Interestelar", "Cristopher Nolan", 2014)
+
+//execução
+console.log(interestelar)
