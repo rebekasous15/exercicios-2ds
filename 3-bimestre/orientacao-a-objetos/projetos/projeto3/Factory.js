@@ -1,4 +1,4 @@
-const Notificacao = require("./Notificacao")
+const Notificacao = require("../Notificacao")
 // CRIE SUA SOLUÇÃO ABAIXO ================
 
 class Factory{
