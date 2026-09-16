@@ -149,5 +149,11 @@ Leia a situação abaixo:
 Responda:
 
 1. Qual foi o problema identificado?
+   
+ -Que eles esqueciam as atividades
 2. Em que momento ocorreu o planejamento?
+
+ -Quando perceberam que eles esqueciam os projetos
 3. Por que os testes foram importantes antes do lançamento?
+
+ -Para verificar se estava funcionando o projeto
