@@ -317,3 +317,12 @@ Identifique cada uma:
 - MVP
 - MLP
 - MMP
+
+Situação A — MVP
+R:Porque é uma versão simples que permite registrar e visualizar os pedidos, servindo para testar a ideia.
+
+Situação B — MLP
+R:Porque, além de funcionar, a equipe melhorou a interface e deixou o uso mais agradável para os usuários.
+
+Situação C — MMP
+R:Porque a plataforma já está estável, possui uma boa experiência e está pronta para ser oferecida comercialmente.
