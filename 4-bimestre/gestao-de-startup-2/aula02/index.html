@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>Funil AARRR | Métricas de crescimento</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172b28;
+      --muted: #64716b;
+      --paper: #f5f4ef;
+      --surface: #fffefa;
+      --line: #d9ded5;
+      --green: #176b50;
+      --green-soft: #e0eee4;
+      --red: #a83228;
+      --red-soft: #f5dfd9;
+      --accent: #ce563b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image: radial-gradient(#cbd3c7 0.7px, transparent 0.7px);
+      background-size: 18px 18px;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(100% - 32px, 1050px);
+      margin: 0 auto;
+      padding: 44px 0 64px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.4rem, 6vw, 4.4rem);
+      font-weight: 500;
+      line-height: 1.02;
+    }
+
+    .intro {
+      max-width: 650px;
+      margin: 14px 0 30px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .funnel {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .stage {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: 18px 14px 16px;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--green);
+      border-radius: 7px;
+      background: var(--surface);
+      transition: border-color 160ms ease, background-color 160ms ease;
+    }
+
+    .stage.largest-drop {
+      border-color: var(--red);
+      border-top-width: 4px;
+      background: #fff9f7;
+    }
+
+    .stage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .stage-letter {
+      color: var(--green);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+
+    .drop-badge {
+      display: none;
+      padding: 4px 6px;
+      border-radius: 4px;
+      color: white;
+      background: var(--red);
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .largest-drop .drop-badge { display: inline-block; }
+
+    .stage h2 {
+      min-height: 2.8em;
+      margin: 10px 0 4px;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .stage-description {
+      min-height: 3em;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .stage-count {
+      margin-top: 18px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.6rem;
+      line-height: 1;
+    }
+
+    .stage-count-label {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .conversion {
+      min-height: 2.6em;
+      margin: 14px 0;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.77rem;
+      line-height: 1.35;
+    }
+
+    .largest-drop .conversion { color: var(--red); font-weight: 800; }
+
+    .action, .score-button {
+      min-height: 42px;
+      border: 1px solid var(--green);
+      border-radius: 5px;
+      color: white;
+      background: var(--green);
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 140ms ease, transform 140ms ease;
+    }
+
+    .action { width: 100%; margin-top: auto; padding: 9px 8px; }
+    .action:hover:not(:disabled), .score-button:hover:not(:disabled) { transform: translateY(-1px); background: #10563f; }
+    .action:disabled, .score-button:disabled { border-color: var(--line); color: #85908a; background: #eceee9; cursor: not-allowed; }
+    .action:focus-visible, .score-button:focus-visible { outline: 3px solid #80a990; outline-offset: 2px; }
+
+    .acquired {
+      margin-top: auto;
+      padding: 11px 8px;
+      border-radius: 5px;
+      color: var(--green);
+      background: var(--green-soft);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .scores {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 4px;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+
+    .score-button { min-height: 34px; padding: 4px 0; font-size: 0.75rem; }
+
+    .notice {
+      min-height: 1.4em;
+      margin: 16px 0 0;
+      color: var(--green);
+      font-size: 0.88rem;
+    }
+
+    .notice.error { color: var(--red); }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .storage-note { margin: 0; color: var(--muted); font-size: 0.78rem; }
+
+    .clear-button {
+      flex: 0 0 auto;
+      padding: 8px 0;
+      border: 0;
+      color: var(--accent);
+      background: transparent;
+      font: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .clear-button:hover { text-decoration: underline; }
+    .clear-button:focus-visible { outline: 3px solid #80a990; outline-offset: 3px; }
+
+    @media (max-width: 820px) {
+      .funnel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stage h2, .stage-description { min-height: 0; }
+      .stage { min-height: 270px; }
+      .stage:last-child { grid-column: 1 / -1; }
+      .stage:last-child .scores { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 480px) {
+      main { padding-top: 32px; }
+      .funnel { grid-template-columns: 1fr; }
+      .stage, .stage:last-child { grid-column: auto; min-height: 0; }
+      .stage h2 { min-height: 0; }
+      .stage-count { margin-top: 12px; }
+      .stage-description { min-height: 0; }
+      .conversion { min-height: 0; }
+      .footer-row { align-items: flex-start; }
+      .stage:last-child .scores { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Métricas de crescimento · AARRR</p>
+    <h1>Por onde o funil está vazando?</h1>
+    <p class="intro">Cada abertura registra uma aquisição. Avance pelas ações e veja quantas pessoas chegam a cada etapa e onde acontece a maior queda.</p>
+
+    <section class="funnel" aria-label="Etapas do funil AARRR">
+      <article class="stage" data-stage="acquisition">
+        <div class="stage-top"><span class="stage-letter" aria-hidden="true">A</span><span class="drop-badge"></span></div>
+        <h2>Aquisição</h2>
+        <p class="stage-description">A pessoa abre a página.</p>
+        <strong class="stage-count" id="count-acquisition">0</strong>
+        <span class="stage-count-label">visitas</span>
+        <p class="conversion" id="conversion-acquisition">Entrada do funil</p>
+        <span class="acquired">Página aberta</span>
+      </article>
+
+      <article class="stage" data-stage="activation">
+        <div class="stage-top"><span class="stage-letter" aria-hidden="true">A</span><span class="drop-badge"></span></div>
+        <h2>Ativação</h2>
+        <p class="stage-description">A primeira experiência com o app.</p>
+        <strong class="stage-count" id="count-activation">0</strong>
+        <span class="stage-count-label">ativações</span>
+        <p class="conversion" id="conversion-activation">Conversão da etapa anterior: —</p>
+        <button class="action" id="try" type="button">Experimentar</button>
+      </article>
+
+      <article class="stage" data-stage="retention">
+        <div class="stage-top"><span class="stage-letter" aria-hidden="true">R</span><span class="drop-badge"></span></div>
+        <h2>Retenção</h2>
+        <p class="stage-description">A pessoa volta para usar o app.</p>
+        <strong class="stage-count" id="count-retention">0</strong>
+        <span class="stage-count-label">retornos</span>
+        <p class="conversion" id="conversion-retention">Conversão da etapa anterior: —</p>
+        <button class="action" id="return" type="button">Quero usar de novo</button>
+      </article>
+
+      <article class="stage" data-stage="revenue">
+        <div class="stage-top"><span class="stage-letter" aria-hidden="true">R</span><span class="drop-badge"></span></div>
+        <h2>Receita</h2>
+        <p class="stage-description">A pessoa demonstra intenção de pagar.</p>
+        <strong class="stage-count" id="count-revenue">0</strong>
+        <span class="stage-count-label">interessados</span>
+        <p class="conversion" id="conversion-revenue">Conversão da etapa anterior: —</p>
+        <button class="action" id="pay" type="button">Eu pagaria por isso</button>
+      </article>
+
+      <article class="stage" data-stage="recommendation">
+        <div class="stage-top"><span class="stage-letter" aria-hidden="true">R</span><span class="drop-badge"></span></div>
+        <h2>Recomendação</h2>
+        <p class="stage-description">Notas 9 e 10 contam como recomendação.</p>
+        <strong class="stage-count" id="count-recommendation">0</strong>
+        <span class="stage-count-label">promotores</span>
+        <p class="conversion" id="conversion-recommendation">Conversão da etapa anterior: —</p>
+        <div class="scores" role="group" aria-label="Dê uma nota de 0 a 10">
+          <button class="score-button" type="button" data-score="0" aria-label="Nota 0">0</button>
+          <button class="score-button" type="button" data-score="1" aria-label="Nota 1">1</button>
+          <button class="score-button" type="button" data-score="2" aria-label="Nota 2">2</button>
+          <button class="score-button" type="button" data-score="3" aria-label="Nota 3">3</button>
+          <button class="score-button" type="button" data-score="4" aria-label="Nota 4">4</button>
+          <button class="score-button" type="button" data-score="5" aria-label="Nota 5">5</button>
+          <button class="score-button" type="button" data-score="6" aria-label="Nota 6">6</button>
+          <button class="score-button" type="button" data-score="7" aria-label="Nota 7">7</button>
+          <button class="score-button" type="button" data-score="8" aria-label="Nota 8">8</button>
+          <button class="score-button" type="button" data-score="9" aria-label="Nota 9">9</button>
+          <button class="score-button" type="button" data-score="10" aria-label="Nota 10">10</button>
+        </div>
+      </article>
+    </section>
+
+    <p class="notice" id="notice" role="status" aria-live="polite"></p>
+    <div class="footer-row">
+      <p class="storage-note">Os resultados ficam salvos neste navegador.</p>
+      <button class="clear-button" id="clear" type="button">Zerar resultados</button>
+    </div>
+  </main>
+
+  <script>
+    const storageKey = "aarrr-funil-aula02";
+    const stageNames = ["acquisition", "activation", "retention", "revenue", "recommendation"];
+    const actionButtons = {
+      activation: document.querySelector("#try"),
+      retention: document.querySelector("#return"),
+      revenue: document.querySelector("#pay")
+    };
+    const scoreButtons = document.querySelectorAll("[data-score]");
+    const notice = document.querySelector("#notice");
+    const progress = { activation: false, retention: false, revenue: false, recommendation: false };
+
+    function loadCounts() {
+      const emptyCounts = Object.fromEntries(stageNames.map((stage) => [stage, 0]));
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+        if (!saved || typeof saved !== "object" || !saved.counts) return emptyCounts;
+        for (const stage of stageNames) {
+          const value = saved.counts[stage];
+          emptyCounts[stage] = Number.isSafeInteger(value) && value >= 0 ? value : 0;
+        }
+      } catch {
+        return emptyCounts;
+      }
+      return emptyCounts;
+    }
+
+    const counts = loadCounts();
+    counts.acquisition += 1;
+
+    function saveCounts() {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify({ counts }));
+        return true;
+      } catch {
+        notice.textContent = "O navegador não permitiu salvar os resultados.";
+        notice.classList.add("error");
+        return false;
+      }
+    }
+
+    function updateFunnel() {
+      stageNames.forEach((stage, index) => {
+        document.querySelector(`#count-${stage}`).textContent = counts[stage];
+        const card = document.querySelector(`[data-stage="${stage}"]`);
+        card.classList.remove("largest-drop");
+        card.querySelector(".drop-badge").textContent = "";
+
+        if (index === 0) return;
+        const previousStage = stageNames[index - 1];
+        const previousCount = counts[previousStage];
+        const conversion = previousCount > 0 ? (counts[stage] / previousCount) * 100 : null;
+        const conversionText = conversion === null ? "—" : `${conversion.toFixed(1)}%`;
+        document.querySelector(`#conversion-${stage}`).textContent = `Conversão da etapa anterior: ${conversionText}`;
+        card.dataset.drop = conversion === null ? "" : String(100 - conversion);
+      });
+
+      const candidates = stageNames.slice(1)
+        .map((stage) => ({ stage, drop: Number(document.querySelector(`[data-stage="${stage}"]`).dataset.drop) }))
+        .filter(({ stage, drop }) => counts[stageNames[stageNames.indexOf(stage) - 1]] > 0 && Number.isFinite(drop));
+
+      if (candidates.length) {
+        const largest = candidates.reduce((current, candidate) => candidate.drop > current.drop ? candidate : current);
+        const card = document.querySelector(`[data-stage="${largest.stage}"]`);
+        card.classList.add("largest-drop");
+        card.querySelector(".drop-badge").textContent = `Maior queda ${largest.drop.toFixed(1)}%`;
+      }
+
+      actionButtons.activation.disabled = progress.activation;
+      actionButtons.retention.disabled = !progress.activation || progress.retention;
+      actionButtons.revenue.disabled = !progress.retention || progress.revenue;
+      scoreButtons.forEach((button) => {
+        button.disabled = !progress.revenue || progress.recommendation;
+      });
+    }
+
+    function advance(stage) {
+      if (progress[stage]) return;
+      counts[stage] += 1;
+      progress[stage] = true;
+      saveCounts();
+      notice.classList.remove("error");
+      notice.textContent = "Etapa registrada.";
+      updateFunnel();
+    }
+
+    actionButtons.activation.addEventListener("click", () => advance("activation"));
+    actionButtons.retention.addEventListener("click", () => advance("retention"));
+    actionButtons.revenue.addEventListener("click", () => advance("revenue"));
+
+    scoreButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!progress.revenue || progress.recommendation) return;
+        const score = Number(button.dataset.score);
+        if (score >= 9) {
+          advance("recommendation");
+          notice.textContent = `Nota ${score}: recomendação registrada.`;
+        } else {
+          notice.classList.remove("error");
+          notice.textContent = `Nota ${score}: neste funil, apenas notas 9 e 10 contam como recomendação.`;
+        }
+      });
+    });
+
+    document.querySelector("#clear").addEventListener("click", () => {
+      stageNames.forEach((stage) => { counts[stage] = 0; });
+      Object.keys(progress).forEach((stage) => { progress[stage] = false; });
+      counts.acquisition = 1;
+      saveCounts();
+      notice.classList.remove("error");
+      notice.textContent = "Resultados zerados. Esta página conta como uma nova aquisição.";
+      updateFunnel();
+    });
+
+    saveCounts();
+    updateFunnel();
+  </script>
+</body>
+</html>

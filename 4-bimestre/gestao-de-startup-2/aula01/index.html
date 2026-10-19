@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>NPS | [NOME DO APP]</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172b28;
+      --muted: #64716b;
+      --paper: #f5f4ef;
+      --surface: #fffefa;
+      --line: #d9ded5;
+      --green: #176b50;
+      --green-soft: #e0eee4;
+      --yellow-soft: #f6edca;
+      --red-soft: #f5dfd9;
+      --accent: #ce563b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image: radial-gradient(#cbd3c7 0.7px, transparent 0.7px);
+      background-size: 18px 18px;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(100% - 32px, 820px);
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 650px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.3rem, 7vw, 4.5rem);
+      font-weight: 500;
+      line-height: 1.02;
+    }
+
+    .intro {
+      max-width: 570px;
+      margin: 16px 0 32px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .survey, .results {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .survey { padding: clamp(20px, 5vw, 34px); }
+
+    .survey h2 {
+      margin: 0 0 8px;
+      font-size: 1.12rem;
+      line-height: 1.4;
+    }
+
+    .hint {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .ratings {
+      display: grid;
+      grid-template-columns: repeat(11, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .rating {
+      min-width: 0;
+      aspect-ratio: 1;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      background: var(--surface);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color 140ms ease, background 140ms ease, transform 140ms ease;
+    }
+
+    .rating:hover, .rating:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--green);
+      color: white;
+      background: var(--green);
+      outline: 2px solid transparent;
+    }
+
+    .rating:focus-visible, .clear-button:focus-visible {
+      outline: 3px solid #80a990;
+      outline-offset: 3px;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .notice {
+      min-height: 1.4em;
+      margin: 14px 0 0;
+      color: var(--green);
+      font-size: 0.9rem;
+    }
+
+    .results { margin-top: 20px; padding: 24px; }
+
+    .results-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .results h2 { margin: 0; font-size: 1rem; }
+
+    .total {
+      color: var(--muted);
+      font-size: 0.84rem;
+      white-space: nowrap;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 14px;
+      border-radius: 6px;
+    }
+
+    .metric.promoters { background: var(--green-soft); }
+    .metric.neutrals { background: var(--yellow-soft); }
+    .metric.detractors { background: var(--red-soft); }
+
+    .metric-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .metric-value {
+      display: block;
+      margin-top: 4px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2rem;
+    }
+
+    .nps-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .nps-label { font-weight: 800; }
+
+    .nps-value {
+      color: var(--green);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .formula {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .clear-button {
+      display: block;
+      margin: 20px 0 0 auto;
+      padding: 8px 0;
+      border: 0;
+      color: var(--accent);
+      background: transparent;
+      font: inherit;
+      font-size: 0.84rem;
+      cursor: pointer;
+    }
+
+    .clear-button:hover { text-decoration: underline; }
+
+    @media (max-width: 560px) {
+      main { padding-top: 32px; }
+      .ratings { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      .rating { aspect-ratio: 1.15; }
+      .metrics { gap: 6px; }
+      .metric { padding: 10px 8px; }
+      .metric-label { font-size: 0.72rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Pesquisa de recomendação</p>
+    <h1>O [NOME DO APP] deixa sua rotina mais simples.</h1>
+    <p class="intro">Sua opinião ajuda a melhorar o app. Leva só um instante.</p>
+
+    <section class="survey" aria-labelledby="question">
+      <h2 id="question">De 0 a 10, quanto você recomendaria este app para um amigo?</h2>
+      <p class="hint">Escolha uma nota para registrar sua resposta.</p>
+      <div class="ratings" role="group" aria-label="Nota de recomendação de 0 a 10">
+        <button class="rating" type="button" data-score="0" aria-label="Nota 0">0</button>
+        <button class="rating" type="button" data-score="1" aria-label="Nota 1">1</button>
+        <button class="rating" type="button" data-score="2" aria-label="Nota 2">2</button>
+        <button class="rating" type="button" data-score="3" aria-label="Nota 3">3</button>
+        <button class="rating" type="button" data-score="4" aria-label="Nota 4">4</button>
+        <button class="rating" type="button" data-score="5" aria-label="Nota 5">5</button>
+        <button class="rating" type="button" data-score="6" aria-label="Nota 6">6</button>
+        <button class="rating" type="button" data-score="7" aria-label="Nota 7">7</button>
+        <button class="rating" type="button" data-score="8" aria-label="Nota 8">8</button>
+        <button class="rating" type="button" data-score="9" aria-label="Nota 9">9</button>
+        <button class="rating" type="button" data-score="10" aria-label="Nota 10">10</button>
+      </div>
+      <div class="scale-labels" aria-hidden="true">
+        <span>De jeito nenhum</span>
+        <span>Com certeza</span>
+      </div>
+      <p class="notice" id="notice" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="results" aria-labelledby="results-title">
+      <div class="results-heading">
+        <h2 id="results-title">Resultado da pesquisa</h2>
+        <span class="total" id="total">0 respostas</span>
+      </div>
+      <div class="metrics" aria-live="polite">
+        <div class="metric promoters">
+          <span class="metric-label">Promotores · 9–10</span>
+          <strong class="metric-value" id="promoters">0</strong>
+        </div>
+        <div class="metric neutrals">
+          <span class="metric-label">Neutros · 7–8</span>
+          <strong class="metric-value" id="neutrals">0</strong>
+        </div>
+        <div class="metric detractors">
+          <span class="metric-label">Detratores · 0–6</span>
+          <strong class="metric-value" id="detractors">0</strong>
+        </div>
+      </div>
+      <div class="nps-row">
+        <span class="nps-label">NPS final</span>
+        <strong class="nps-value" id="nps">—</strong>
+      </div>
+      <p class="formula">NPS = % de promotores − % de detratores</p>
+      <button class="clear-button" id="clear" type="button">Apagar respostas salvas</button>
+    </section>
+  </main>
+
+  <script>
+    const storageKey = "nps-nome-do-app-respostas";
+    const ratings = document.querySelectorAll("[data-score]");
+    const notice = document.querySelector("#notice");
+    const clearButton = document.querySelector("#clear");
+
+    function loadResponses() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        return Array.isArray(saved)
+          ? saved.filter((score) => Number.isInteger(score) && score >= 0 && score <= 10)
+          : [];
+      } catch {
+        return [];
+      }
+    }
+
+    let responses = loadResponses();
+
+    function updateResults() {
+      const promoters = responses.filter((score) => score >= 9).length;
+      const neutrals = responses.filter((score) => score >= 7 && score <= 8).length;
+      const detractors = responses.filter((score) => score <= 6).length;
+      const total = responses.length;
+
+      document.querySelector("#promoters").textContent = promoters;
+      document.querySelector("#neutrals").textContent = neutrals;
+      document.querySelector("#detractors").textContent = detractors;
+      document.querySelector("#total").textContent = `${total} ${total === 1 ? "resposta" : "respostas"}`;
+      document.querySelector("#nps").textContent = total
+        ? Math.round((promoters / total) * 100 - (detractors / total) * 100)
+        : "—";
+    }
+
+    function saveResponses() {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(responses));
+        return true;
+      } catch {
+        notice.textContent = "Não foi possível salvar. Verifique as configurações do navegador.";
+        return false;
+      }
+    }
+
+    ratings.forEach((button) => {
+      button.addEventListener("click", () => {
+        responses.push(Number(button.dataset.score));
+        if (saveResponses()) {
+          notice.textContent = "Resposta registrada. Obrigado!";
+        }
+        updateResults();
+      });
+    });
+
+    clearButton.addEventListener("click", () => {
+      responses = [];
+      try {
+        localStorage.removeItem(storageKey);
+        notice.textContent = "Respostas apagadas.";
+      } catch {
+        notice.textContent = "Não foi possível apagar as respostas salvas.";
+      }
+      updateResults();
+    });
+
+    updateResults();
+  </script>
+</body>
+</html>
